@@ -593,10 +593,10 @@ bool Table::Query(const SyllableGraph& syll_graph,
     size_t current_pos = q.front().first;
     TableQuery query(q.front().second);
     q.pop();
-    auto index = syll_graph.indices.find(current_pos);
-    if (index == syll_graph.indices.end()) {
+    if (current_pos == syll_graph.interpreted_length) {
       continue;
     }
+    auto& index = syll_graph.indices[current_pos];
     if (query.level() == Code::kIndexCodeMaxLength) {
       TableAccessor accessor(query.Access(-1));
       if (!accessor.exhausted()) {
@@ -604,7 +604,7 @@ bool Table::Query(const SyllableGraph& syll_graph,
       }
       continue;
     }
-    for (const auto& spellings : index->second) {
+    for (const auto& spellings : index) {
       SyllableId syll_id = spellings.first;
       for (auto props : spellings.second) {
         TableAccessor accessor(query.Access(syll_id, props->credibility));
