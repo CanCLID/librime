@@ -337,7 +337,8 @@ string ScriptSyllabifier::GetPreeditString(const Phrase& cand) const {
 
 string ScriptSyllabifier::GetOriginalSpelling(const Phrase& cand) const {
   if (translator_ &&
-      static_cast<int>(cand.code().size()) <= translator_->spelling_hints()) {
+      (translator_->always_show_comments() || static_cast<int>(
+          cand.code().size()) <= translator_->spelling_hints())) {
     return translator_->Spell(cand.code());
   }
   return string();
