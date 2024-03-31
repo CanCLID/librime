@@ -240,9 +240,6 @@ bool DistinctTranslation::Next() {
     }
     phrase->set_comment(comment);
   }
-  if (translation_->exhausted()) {
-    set_exhausted(true);
-  }
   return true;
 }
 
