@@ -38,9 +38,9 @@ Follow the instructions to build librime on platforms other than Linux:
 
 Build dependencies
 ---
-  - compiler with C++14 support
-  - cmake>=2.8
-  - libboost>=1.48
+  - compiler with C++17 support
+  - cmake>=3.12
+  - libboost>=1.74
   - libglog (optional)
   - libleveldb
   - libmarisa
@@ -81,15 +81,17 @@ Community:
   - [Trime](https://github.com/osfans/trime): frontend for Android
   - [XIME](https://github.com/stackia/XIME): frontend for macOS
   - [My RIME](https://github.com/LibreService/my_rime): frontend for web
+  - [fcitx5-android](https://github.com/fcitx5-android/fcitx5-android): frontend for Android
 
 Plugins
 ===
-  - [librime-charcode](https://github.com/rime/librime-charcode) Module that
+  - [librime-charcode](https://github.com/rime/librime-charcode) (Deprecated) Module that
     deals with character encoding; depends on boost::locale and ICU libraries
-  - [librime-legacy](https://github.com/rime/librime-legacy) Legacy module with
+  - [librime-legacy](https://github.com/rime/librime-legacy) (Deprecated) Legacy module with
     GPL-licensed code
   - [librime-lua](https://github.com/hchunhui/librime-lua) Lua scripting
   - [librime-octagram](https://github.com/lotem/librime-octagram) Language model
+  - [librime-predict](https://github.com/rime/librime-predict) Predict next word
   - [librime-proto](https://github.com/lotem/librime-proto) IPC using CapnProto
 
 Related works
@@ -126,3 +128,5 @@ Contributors
   - [jakwings](https://github.com/jakwings)
   - [Prcuvu](https://github.com/Prcuvu)
   - [hchunhui](https://github.com/hchunhui)
+  - [Qijia Liu](https://github.com/eagleoflqj)
+  - [WhiredPlanck](https://github.com/WhiredPlanck)

@@ -14,3 +14,4 @@ node_modules/
 .*.swp
 .cache/
 .vs/
+*.7z
