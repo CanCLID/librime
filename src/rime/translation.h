@@ -120,16 +120,17 @@ inline an<Translation> Cached(Args&&... args) {
 
 class DistinctTranslation : public Translation {
  public:
-  DistinctTranslation(an<Translation> translation, const bool combine_candidates);
+  DistinctTranslation(an<Translation> translation,
+                      const bool combine_candidates);
 
   virtual bool Next();
   virtual an<Candidate> Peek();
 
  protected:
-  bool DistinctTranslation::AlreadyHas(const pair<string, string>& candidate) const;
+  bool AlreadyHas(const pair<string, string>& candidate) const;
 
   const bool combine_candidates_;
-  set<pair<string, string> > candidate_set_;
+  set<pair<string, string>> candidate_set_;
   an<Translation> translation_;
   an<Candidate> cache_;
 };
