@@ -289,6 +289,7 @@ typedef struct RIME_FLAVORED(rime_api_t) {
   void (*finalize)(void);
 
   Bool (*start_maintenance)(Bool full_check);
+  Bool (*start_quick)(void);
   Bool (*is_maintenance_mode)(void);
   void (*join_maintenance_thread)(void);
 

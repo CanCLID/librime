@@ -81,9 +81,22 @@ RIME_DEPRECATED Bool RimeStartMaintenance(Bool full_check) {
     }
     LOG(INFO) << "changes detected; starting maintenance.";
   }
-  deployer.ScheduleTask("workspace_update");
+  TaskInitializer build_dictionary(false);
+  deployer.ScheduleTask("workspace_update", build_dictionary);
   deployer.ScheduleTask("user_dict_upgrade");
   deployer.ScheduleTask("cleanup_trash");
+  deployer.StartMaintenance();
+  return True;
+}
+
+RIME_DEPRECATED Bool RimeStartQuick() {
+  LoadModules(kDeployerModules);
+  Deployer& deployer(Service::instance().deployer());
+  deployer.RunTask("clean_old_log_files");
+  if (!deployer.RunTask("installation_update")) {
+    return False;
+  }
+  deployer.ScheduleTask("user_dict_upgrade");
   deployer.StartMaintenance();
   return True;
 }
@@ -117,15 +130,17 @@ RIME_DEPRECATED Bool RimePrebuildAllSchemas() {
 
 RIME_DEPRECATED Bool RimeDeployWorkspace() {
   Deployer& deployer(Service::instance().deployer());
+  TaskInitializer build_dictionary(true);
   return Bool(deployer.RunTask("installation_update") &&
-              deployer.RunTask("workspace_update") &&
+              deployer.RunTask("workspace_update", build_dictionary) &&
               deployer.RunTask("user_dict_upgrade") &&
               deployer.RunTask("cleanup_trash"));
 }
 
 RIME_DEPRECATED Bool RimeDeploySchema(const char* schema_file) {
   Deployer& deployer(Service::instance().deployer());
-  return Bool(deployer.RunTask("schema_update", path(schema_file)));
+  TaskInitializer args(make_pair<path, bool>(path(schema_file), true));
+  return Bool(deployer.RunTask("schema_update", args));
 }
 
 RIME_DEPRECATED Bool RimeDeployConfigFile(const char* file_name,
@@ -1138,6 +1153,7 @@ RIME_API RIME_FLAVORED(RimeApi) * RIME_FLAVORED(rime_get_api)() {
     s_api.initialize = &RimeInitialize;
     s_api.finalize = &RimeFinalize;
     s_api.start_maintenance = &RimeStartMaintenance;
+    s_api.start_quick = &RimeStartQuick;
     s_api.is_maintenance_mode = &RimeIsMaintenancing;
     s_api.join_maintenance_thread = &RimeJoinMaintenanceThread;
     s_api.deployer_initialize = &RimeDeployerInitialize;

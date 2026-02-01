@@ -34,19 +34,23 @@ class RIME_DLL InstallationUpdate : public DeploymentTask {
 // update distributed config files and preset schemas
 class RIME_DLL WorkspaceUpdate : public DeploymentTask {
  public:
-  WorkspaceUpdate(TaskInitializer arg = TaskInitializer()) {}
+  explicit WorkspaceUpdate(const bool& build_dictionary = true)
+      : build_dictionary_(build_dictionary) {}
+  WorkspaceUpdate(TaskInitializer arg);
   bool Run(Deployer* deployer);
 
  protected:
   string GetSchemaPath(Deployer* deployer,
                        const string& schema_id,
                        bool prefer_shared_copy);
+  bool build_dictionary_;
 };
 
 // update a specific schema, build corresponding dictionary
 class RIME_DLL SchemaUpdate : public DeploymentTask {
  public:
-  explicit SchemaUpdate(const path& source_path) : source_path_(source_path) {}
+  explicit SchemaUpdate(const path& source_path, const bool& build_dictionary = true)
+      : source_path_(source_path), build_dictionary_(build_dictionary) {}
   SchemaUpdate(TaskInitializer arg);
   bool Run(Deployer* deployer);
   void set_verbose(bool verbose) { verbose_ = verbose; }
@@ -54,6 +58,7 @@ class RIME_DLL SchemaUpdate : public DeploymentTask {
  protected:
   path source_path_;
   bool verbose_ = false;
+  bool build_dictionary_;
 };
 
 // update a specific config file

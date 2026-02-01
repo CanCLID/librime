@@ -163,6 +163,14 @@ bool InstallationUpdate::Run(Deployer* deployer) {
   return config.SaveToFile(installation_info);
 }
 
+WorkspaceUpdate::WorkspaceUpdate(TaskInitializer arg) : build_dictionary_(true) {
+  try {
+    build_dictionary_ = std::any_cast<bool>(arg);
+  } catch (const std::bad_any_cast&) {
+    LOG(ERROR) << "WorkspaceUpdate: invalid arguments.";
+  }
+}
+
 bool WorkspaceUpdate::Run(Deployer* deployer) {
   LOG(INFO) << "updating workspace.";
   {
@@ -214,7 +222,7 @@ bool WorkspaceUpdate::Run(Deployer* deployer) {
       }
       return;
     }
-    the<DeploymentTask> t(new SchemaUpdate(schema_path));
+    the<DeploymentTask> t(new SchemaUpdate(schema_path, build_dictionary_));
     if (t->Run(deployer))
       ++success;
     else
@@ -254,7 +262,16 @@ bool WorkspaceUpdate::Run(Deployer* deployer) {
   return failure == 0;
 }
 
-SchemaUpdate::SchemaUpdate(TaskInitializer arg) : verbose_(false) {
+SchemaUpdate::SchemaUpdate(TaskInitializer arg)
+    : verbose_(false), build_dictionary_(true) {
+  try {
+    auto p = std::any_cast<pair<path, bool>>(arg);
+    source_path_ = p.first;
+    build_dictionary_ = p.second;
+    return;
+  } catch (const std::bad_any_cast&) {
+    // Fall through to try legacy argument shape.
+  }
   try {
     source_path_ = std::any_cast<path>(arg);
   } catch (const std::bad_any_cast&) {
@@ -343,6 +360,9 @@ bool SchemaUpdate::Run(Deployer* deployer) {
       new ConfigFileUpdate(schema_id + ".schema.yaml", "schema/version"));
   if (!config_file_update->Run(deployer)) {
     return false;
+  }
+  if (!build_dictionary_) {
+    return true;
   }
   // reload compiled config
   config.reset(Config::Require("schema")->Create(schema_id));
