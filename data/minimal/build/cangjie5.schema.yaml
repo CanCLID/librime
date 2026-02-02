@@ -1,5 +1,10 @@
 __build_info:
-  rime_version: 1.11.0
+  rime_version: 1.16.1
+  timestamps:
+    cangjie5.custom: 0
+    cangjie5.schema: 1769901664
+    default: 1769901664
+    default.custom: 0
 abc_segmentor:
   extra_tags:
     - reverse_lookup
